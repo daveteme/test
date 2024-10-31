@@ -1,0 +1,386 @@
+:root {
+    --neon-pink: #ff71ce;
+    --neon-blue: #01cdfe;
+    --neon-green: #05ffa1;
+    --neon-purple: #b967ff;
+    --bg-dark: #1f1135;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'VT323', monospace;
+}
+
+body {
+    background: var(--bg-dark);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Retro Background Grid */
+body::before {
+    content: '';
+    position: fixed;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: 
+        linear-gradient(
+            217deg,
+            rgba(255,113,206,0),
+            rgba(255,113,206,0.2) 70.71%
+        ),
+        linear-gradient(
+            127deg,
+            rgba(1,205,254,0),
+            rgba(1,205,254,0.2) 70.71%
+        ),
+        linear-gradient(
+            336deg,
+            rgba(5,255,161,0),
+            rgba(5,255,161,0.2) 70.71%
+        );
+    transform: rotate(-45deg);
+    animation: retroMove 20s linear infinite;
+    z-index: 0;
+}
+
+.game-container {
+    padding: 20px;
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    background: rgba(31, 17, 53, 0.8);
+    border-radius: 20px;
+    border: 2px solid var(--neon-pink);
+    box-shadow: 
+        0 0 20px var(--neon-pink),
+        inset 0 0 20px var(--neon-pink);
+    backdrop-filter: blur(10px);
+}
+
+.game-title {
+    text-align: center;
+    font-size: 4rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(
+        45deg,
+        var(--neon-pink),
+        var(--neon-blue),
+        var(--neon-green)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 
+        2px 2px 0px rgba(255, 113, 206, 0.5),
+        -2px -2px 0px rgba(1, 205, 254, 0.5);
+    animation: retroText 2s ease-in-out infinite alternate;
+    letter-spacing: 4px;
+}
+
+#gameArea {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 113, 206, 0.1),
+        rgba(1, 205, 254, 0.1)
+    );
+    border: 3px solid var(--neon-blue);
+    box-shadow: 
+        0 0 20px var(--neon-blue),
+        inset 0 0 20px var(--neon-blue);
+    transition: 0.3s ease;
+    transform: perspective(1000px) rotateX(5deg);
+    backdrop-filter: blur(5px);
+}
+
+.spot {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+#spot1 { top: 0%; left: 0%; }
+#spot2 { top: 0%; left: 50%; }
+#spot3 { top: 0%; left: 100%; }
+#spot4 { top: 50%; left: 0%; }
+#spot5 { top: 50%; left: 50%; }
+#spot6 { top: 50%; left: 100%; }
+#spot7 { top: 100%; left: 0%; }
+#spot8 { top: 100%; left: 50%; }
+#spot9 { top: 100%; left: 100%; }
+
+.cork {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+.cork.red {
+    border: 2px solid var(--neon-pink);
+    box-shadow: 
+        0 0 10px var(--neon-pink),
+        0 0 20px var(--neon-pink),
+        inset 0 0 15px var(--neon-pink);
+}
+
+.cork.blue {
+    border: 2px solid var(--neon-blue);
+    box-shadow: 
+        0 0 10px var(--neon-blue),
+        0 0 20px var(--neon-blue),
+        inset 0 0 15px var(--neon-blue);
+}
+
+.cork.dragging {
+    transform: scale(1.2);
+    opacity: 0.8;
+}
+
+.path {
+    position: absolute;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(1, 205, 254, 0.5), 
+        transparent
+    );
+    opacity: 0.5;
+    box-shadow: 0 0 10px var(--neon-blue);
+}
+
+.path1 {
+    top: 0;
+    left: 50%;
+    height: 100%;
+    width: 2px;
+    background: linear-gradient(
+        to bottom,
+        var(--neon-pink),
+        var(--neon-blue)
+    );
+}
+
+.path2 {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(
+        to right,
+        var(--neon-blue),
+        var(--neon-green)
+    );
+}
+
+.path3, .path4 {
+    width: 2px;
+    background: linear-gradient(
+        to bottom,
+        var(--neon-green),
+        var(--neon-purple)
+    );
+}
+
+.path3 {
+    top: 0;
+    left: 0;
+    height: 141.4%;
+    transform: rotate(-45deg);
+    transform-origin: top left;
+}
+
+.path4 {
+    top: 0;
+    right: 0;
+    height: 141.4%;
+    transform: rotate(45deg);
+    transform-origin: top right;
+}
+
+.spot.valid-move::after {
+    content: '';
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--neon-green);
+    box-shadow: 
+        0 0 10px var(--neon-green),
+        inset 0 0 10px var(--neon-green);
+    animation: retroPulse 1.5s infinite;
+    left: -2px;
+    top: -2px;
+}
+
+.game-info {
+    margin-top: 2rem;
+    padding: 20px;
+    background: rgba(185, 103, 255, 0.1);
+    border: 2px solid var(--neon-purple);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 0 20px var(--neon-purple),
+        inset 0 0 10px var(--neon-purple);
+}
+
+.timer {
+    color: var(--neon-green);
+    text-shadow: 
+        0 0 5px var(--neon-green),
+        0 0 10px var(--neon-green);
+    font-size: 2rem;
+    letter-spacing: 2px;
+}
+
+.current-player {
+    color: var(--neon-pink);
+    text-shadow: 
+        0 0 5px var(--neon-pink),
+        0 0 10px var(--neon-pink);
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.btn-neon {
+    background: transparent;
+    border: 2px solid var(--neon-blue);
+    color: var(--neon-blue);
+    padding: 15px 20px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 0 10px var(--neon-blue);
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.btn-neon:hover {
+    background: var(--neon-blue);
+    color: var(--bg-dark);
+    box-shadow: 
+        0 0 20px var(--neon-blue),
+        inset 0 0 10px var(--bg-dark);
+    transform: translateY(-2px) scale(1.02);
+    letter-spacing: 4px;
+}
+
+.winner-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(31, 17, 53, 0.9);
+    border: 2px solid var(--neon-green);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    z-index: 1000;
+    display: none;
+    box-shadow: 
+        0 0 30px var(--neon-green),
+        inset 0 0 20px var(--neon-green);
+    backdrop-filter: blur(10px);
+}
+
+.winner-message h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(
+        45deg,
+        var(--neon-pink),
+        var(--neon-blue)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 
+        2px 2px 0px rgba(255, 113, 206, 0.5),
+        -2px -2px 0px rgba(1, 205, 254, 0.5);
+}
+
+@keyframes retroMove {
+    0% { transform: rotate(-45deg) translateY(0); }
+    100% { transform: rotate(-45deg) translateY(-100px); }
+}
+
+@keyframes retroText {
+    0% { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% { 
+        transform: translateY(-5px);
+        opacity: 0.8;
+    }
+}
+
+@keyframes retroPulse {
+    0% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
+    100% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 576px) {
+    .game-container {
+        padding: 10px;
+    }
+    
+    .game-title {
+        font-size: 2.5rem;
+    }
+
+    #gameArea {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-neon {
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    .timer {
+        font-size: 1.5rem;
+    }
+
+    .current-player {
+        font-size: 1.2rem;
+    }
+}
